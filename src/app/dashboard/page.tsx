@@ -1,14 +1,30 @@
+import FullWidthTextField from "@/component/searchBar";
 import RootLayout from "../layout";
 import DashboardLayout from "./layout";
+import CommunitySelect from "@/component/communitySelect";
+import { Button } from "@mui/material";
+import PostList from "@/component/postList";
 
-const Account = () => {
-  return <div>Account screen</div>;
+const Dashboard = () => {
+  return (
+    <div className=" w-full h-dvh">
+      <div className="flex place-content-center">
+        <FullWidthTextField />
+        <CommunitySelect />
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ marginRight: 1, bgcolor: "#49A569" }}
+          disableElevation
+        >
+          Create +
+        </Button>
+      </div>
+      <div className="flex place-content-center mt-5">
+        <PostList />
+      </div>
+    </div>
+  );
 };
 
-Account.getLayout = (page: React.ReactNode) => (
-  <DashboardLayout>
-    {page}
-  </DashboardLayout>
-);
-
-export default Account;
+export default Dashboard;

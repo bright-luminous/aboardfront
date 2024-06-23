@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import Sidebar from "@/component/sideBar";
+import NavOverlay from "@/component/navOverlay";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,8 +9,8 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <body className={`${inter.className} flex items-start justify-between`}>
-      <Sidebar>{children}</Sidebar>
+    <body className={`${inter.className} justify-between`}>
+      <NavOverlay>{children}</NavOverlay>
     </body>
   );
 }

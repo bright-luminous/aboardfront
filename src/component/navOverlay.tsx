@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Button } from "@mui/material";
+import HomeIcon from '@mui/icons-material/Home';
 
 const drawerWidth = 240;
 
@@ -73,7 +74,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function Sidebar({ children }: { children: React.ReactNode }) {
+export default function NavOverlay({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -86,9 +91,9 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", backgroundColor:"#BBC2C0" }} className="w-screen h-screen">
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ bgcolor: '#243831' }}>
+      <AppBar position="fixed" open={open} sx={{ bgcolor: "#243831" }}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -102,13 +107,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             a Board
           </Typography>
-          <Button variant="contained" sx={{ bgcolor: '#49A569' }} >Sing In</Button>
+          <Button variant="contained" sx={{ bgcolor: "#49A569" }}>
+            Sing In
+          </Button>
         </Toolbar>
       </AppBar>
       <Drawer
         sx={{
           width: drawerWidth,
           flexShrink: 0,
+          backgroundColor:"#BBC2C0",
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
@@ -129,24 +137,11 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+          {["Home", "Our Blog"].map((text, index) => (
             <ListItem key={text} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  {index % 2 === 0 ? <HomeIcon /> : <InboxIcon />}
                 </ListItemIcon>
                 <ListItemText primary={text} />
               </ListItemButton>
@@ -154,9 +149,9 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           ))}
         </List>
       </Drawer>
-      <Main open={open}>
+      <Main open={open} >
         <DrawerHeader />
-        {children}
+        <div>{children}</div>
       </Main>
     </Box>
   );

@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
+import './globals.css'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,7 +16,7 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} flex items-start justify-between`}>
+      <body className={`${inter.className} items-start justify-between`}>
         {children}
       </body>
     </html>

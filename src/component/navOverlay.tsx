@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -21,7 +20,12 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { Button } from "@mui/material";
-import HomeIcon from '@mui/icons-material/Home';
+import HomeIcon from "@mui/icons-material/Home";
+import DoneIcon from '@mui/icons-material/Done';
+import * as React from "react";
+import Dashboard from "@/app/dashboard/page";
+import { OurPostContext } from "@/app/public/itemContext";
+import { useContext } from "react";
 
 const drawerWidth = 240;
 
@@ -29,7 +33,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })<{
   open?: boolean;
 }>(({ theme, open }) => ({
   flexGrow: 1,
-  padding: theme.spacing(3),
+  padding: theme.spacing(0),
   transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -90,8 +94,21 @@ export default function NavOverlay({
     setOpen(false);
   };
 
+  var {ourPostState, setOurPostState} = useContext(OurPostContext);
+  function toggleOwnerPost() {
+    // console.log(ourPostState)
+    if(ourPostState == true){
+      setOurPostState(false);
+      // ourPostState = false;
+    }else{
+      setOurPostState(true);
+      // ourPostState = true;
+    }
+  }
+
+
   return (
-    <Box sx={{ display: "flex", backgroundColor:"#BBC2C0" }} className="w-screen h-screen">
+    <Box sx={{ display: "flex" }} className="w-screen h-svh">
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ bgcolor: "#243831" }}>
         <Toolbar>
@@ -107,7 +124,11 @@ export default function NavOverlay({
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             a Board
           </Typography>
-          <Button variant="contained" sx={{ bgcolor: "#49A569" }}>
+          <Button
+            variant="contained"
+            sx={{ bgcolor: "#49A569" }}
+            href={`/login`}
+          >
             Sing In
           </Button>
         </Toolbar>
@@ -116,7 +137,6 @@ export default function NavOverlay({
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          backgroundColor:"#BBC2C0",
           "& .MuiDrawer-paper": {
             width: drawerWidth,
             boxSizing: "border-box",
@@ -126,7 +146,7 @@ export default function NavOverlay({
         anchor="left"
         open={open}
       >
-        <DrawerHeader>
+        <DrawerHeader className="bg-[#BBC2C0]">
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -135,23 +155,31 @@ export default function NavOverlay({
             )}
           </IconButton>
         </DrawerHeader>
-        <Divider />
-        <List>
-          {["Home", "Our Blog"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <HomeIcon /> : <InboxIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+        <Divider className="bg-[#BBC2C0]" />
+        <List className="bg-[#BBC2C0] h-dvh">
+          <ListItem key={"Home"} disablePadding>
+            <ListItemButton href={`/dashboard`}>
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Home"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem key={"Our Blog"} disablePadding>
+            <ListItemButton onClick={toggleOwnerPost}>
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Our Blog"} />
+              {ourPostState && <DoneIcon/>}
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
-      <Main open={open} >
+      <Main open={open}>
         <DrawerHeader />
-        <div>{children}</div>
+        {/* <Dashboard ownerPost={ownerPost}/> */}
+        {children}
       </Main>
     </Box>
   );

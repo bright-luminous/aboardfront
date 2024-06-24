@@ -6,7 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
-import { Chip, Stack } from "@mui/material";
+import { Box, Chip, Stack } from "@mui/material";
 
 export default function CommentList() {
   const testarr = [
@@ -37,26 +37,24 @@ export default function CommentList() {
                 sx={{ height: "40px", width: "40px", margin: 1 }}
               />
             </ListItemAvatar>
-            <ListItemText
-              secondary={
-                <React.Fragment>
-                  <Typography variant="h6" color="text.primary">
-                    {item.title}{" "}
-                    <Typography sx={{ display: "inline" }} variant="subtitle2">
-                      12h ago
-                    </Typography>
-                  </Typography>
-                  <Typography
-                    sx={{ display: "inline" }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
-                  >
-                    {item.content}
-                  </Typography>
-                </React.Fragment>
-              }
-            />
+            <ListItemText>
+              <Box sx={{display:'flex', alignItems: 'center'}}>
+              <Typography variant="h6" color="text.primary">
+                {item.title}
+              </Typography>
+                <Typography sx={{ display: "inline", marginLeft:1 }} variant="subtitle2">
+                  12h ago
+                </Typography>
+              </Box>
+              <Typography
+                sx={{ display: "inline" }}
+                component="span"
+                variant="body2"
+                color="text.primary"
+              >
+                {item.content}
+              </Typography>
+            </ListItemText>
           </ListItem>
         </>
       ))}

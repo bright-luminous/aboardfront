@@ -1,10 +1,30 @@
-import FullWidthTextField from "@/component/searchBar";
-import CommunitySelect from "@/component/communitySelect";
+'use client'
+
 import { Box, Button, TextField, Typography } from "@mui/material";
 import Image from "next/image";
-import LoadImage from "@/app/public/aboard.png"
+import LoadImage from "@/app/public/aboard.png";
+import axios from "axios";
+import { redirect, useRouter } from "next/navigation";
+import { setCookie } from "cookies-next";
 
 const Login = () => {
+  var currentUsername = "";
+  function setNewUsername(username) {
+    currentUsername = username;
+  }
+
+  const router = useRouter()
+
+  function login(username) {
+    axios
+      .get(`http://localhost:3000/user/username?username=${username}`, {withCredentials: true})
+      .then((response) => {
+        if (response.data != "") {
+          setCookie("user", response.data, { maxAge: 60 * 6 * 24 });
+          router.push("http://localhost:8080/dashboard")
+        }
+      });
+  }
   return (
     <Box
       className="flex justify-center content-center w-full h-dvh"
@@ -21,13 +41,15 @@ const Login = () => {
           id="outlined-basic"
           label="Username"
           variant="filled"
+          onChange={(e)=>setNewUsername(e.currentTarget.value)}
           sx={{
             width: "66%",
             bgcolor: "#FFFFFF",
           }}
-        />
+          />
         <Button
           variant="contained"
+          onClick={()=>login(currentUsername)}
           sx={{
             width: "66%",
             bgcolor: "#49A569",
@@ -37,14 +59,20 @@ const Login = () => {
           Sing In
         </Button>
       </Box>
-      <Box className="rounded-l-lg w-1/3 h-dvh grid justify-items-center content-center" sx={{ backgroundColor: "#2B5F44" }}>
+      <Box
+        className="rounded-l-lg w-1/3 h-dvh grid justify-items-center content-center"
+        sx={{ backgroundColor: "#2B5F44" }}
+      >
         <Image
           src={LoadImage}
           width={300}
           height={300}
           alt="Picture of the author"
         />
-        <Typography variant="h6" className="my-5 text-white font-['Castoro'] italic ">
+        <Typography
+          variant="h6"
+          className="my-5 text-white font-['Castoro'] italic "
+        >
           a Board
         </Typography>
       </Box>

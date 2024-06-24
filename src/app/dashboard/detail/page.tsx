@@ -1,5 +1,5 @@
-import FullWidthTextField from "@/component/searchBar";
-import CommunitySelect from "@/component/communitySelect";
+"use client";
+
 import {
   Avatar,
   Box,
@@ -12,14 +12,33 @@ import {
 import PostList from "@/component/postList";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CommentList from "@/component/commentList";
+import CommentCreateBox from "@/component/commentCreateBox";
+import { useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { navigate } from "@/component/action";
 
 const PostDetail = () => {
+  const [isOpen, setOpen] = useState(false);
+  function toggle() {
+    setOpen((isOpen) => !isOpen);
+  }
+
+  const router = useRouter()
+  function backPage(){
+    router.push("http://localhost:8080/dashboard")
+  }
+
   return (
-    <div className="place-content-center w-5/6 mx-20">
-      <IconButton aria-label="back" edge="start" className="mx-6" sx={{color: "#243831", backgroundColor:"#D8E9E4" }}>
+    <div className="place-content-center w-5/6 mx-20 pt-8">
+      <IconButton
+      onClick={backPage}
+        edge="start"
+        className="mx-6"
+        sx={{ color: "#243831", backgroundColor: "#D8E9E4" }}
+      >
         <ArrowBackIcon />
       </IconButton>
-      <Box sx={{ display: "flex", alignItems:"center", margin:1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", margin: 1 }}>
         <Avatar
           alt="E"
           src="D:\test\aboardfront\src\picture\HC.jpg"
@@ -40,12 +59,12 @@ const PostDetail = () => {
           The Big Short War
         </Typography>
         <Typography
-          sx={{ display: "inline" }}
+          sx={{ display: "inline", wordBreak: "break-word" }}
           component="span"
           variant="body1"
           color="text.primary"
         >
-          Tall, athletic, handsome with cerulean eyes, he was the kind of
+          "Tall, athletic, handsome with cerulean eyes, he was the kind of
           hyper-ambitious kid other kids loved to hate and just the type to make
           a big wager with no margin for error. But on the night before the
           S.A.T., his father took pity on him and canceled the bet. “I would’ve
@@ -56,12 +75,18 @@ const PostDetail = () => {
         <Typography variant="body2" color="text.secondary" className="my-5">
           32 comments
         </Typography>
-        <Button
-          variant="outlined"
-          sx={{ color: "#49A569", borderColor: "#49A569" }}
-        >
-          Add Comment
-        </Button>
+        {!isOpen && (
+          <Button
+            onClick={toggle}
+            variant="outlined"
+            sx={{ color: "#49A569", borderColor: "#49A569" }}
+          >
+            Add Comment
+          </Button>
+        )}
+        {isOpen && (
+          <CommentCreateBox isActive={isOpen} onShow={() => toggle()} />
+        )}
         <CommentList></CommentList>
       </div>
     </div>

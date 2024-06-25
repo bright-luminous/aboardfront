@@ -26,6 +26,7 @@ export default function DeletePostCard({ onShow }) {
   }
 
   function wrapDeleteFunc(event) {
+    console.log(itemObj)
     deletePost(event.target.id);
     onShow();
   }

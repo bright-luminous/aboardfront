@@ -20,7 +20,7 @@ const Login = () => {
       .get(`http://localhost:3000/user/username?username=${username}`, {withCredentials: true})
       .then((response) => {
         if (response.data != "") {
-          setCookie("user", response.data, { maxAge: 60 * 6 * 24 });
+          setCookie("user", response.data, { maxAge: 24 * 60 * 60 * 1000 });
           router.push("http://localhost:8080/dashboard")
         }
       });

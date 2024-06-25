@@ -2,9 +2,30 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
-import { useState } from "react";
+import axios from "axios";
+import { getCookie } from "cookies-next";
 
-export default function CommentCreateBox({ isActive, onShow }) {
+export default function CommentCreateBox({ isActive, onShow, parentPostID }) {
+  const ownerDetail = getCookie("user")?.toString();
+
+  var [textboxValue, setTextboxValue] = React.useState("")
+  function createNewComment(){
+    const ownerDetailJson = JSON.parse(ownerDetail!);
+    axios
+      .post(`http://localhost:3000/comment`, {
+        content: textboxValue,
+        owner: ownerDetailJson.id,
+        parentPost: parentPostID,
+      })
+  }
+  function setTextbox(event) {
+    setTextboxValue(event.target.value as string);
+  }
+  function wrapPostFunc(){
+    createNewComment()
+    onShow()
+  }
+
   return (
     <Box
       component="form"
@@ -15,11 +36,11 @@ export default function CommentCreateBox({ isActive, onShow }) {
       {isActive && (
         <TextField
           id="outlined-multiline-static"
-          label="Multiline"
+          label="What's on your mind..."
           multiline
           rows={4}
-          defaultValue="Default Value"
           fullWidth
+          onChange={(e) => setTextbox(e)}
         />
       )}
       {isActive && (
@@ -39,6 +60,7 @@ export default function CommentCreateBox({ isActive, onShow }) {
             Cancel
           </Button>
           <Button
+          onClick={wrapPostFunc}
             variant="contained"
             sx={{
               bgcolor: "#49A569",

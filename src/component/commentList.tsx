@@ -7,40 +7,40 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import { Box, Chip, Stack } from "@mui/material";
+import axios from "axios";
+// /comment/post?id=d00b41f5-373f-4fde-8d17-450825acdf3f
 
-export default function CommentList() {
-  const testarr = [
-    {
-      id: 1,
-      displayname: "guy1",
-      title: "title1",
-      content: "asdasdasdasdasdasdasdasdasdasdasd",
-      commentCount: 12,
-    },
-    {
-      id: 2,
-      displayname: "guy2",
-      title: "title2",
-      content: "zxczxczxczxczxczxczxczxczxc",
-      commentCount: 21,
-    },
-  ];
+export default function CommentList({initData}) {
+  var [commentList, setCommentList] = React.useState([])
+  function getCommentList() {
+    axios
+      .get(`http://localhost:3000/comment/post?id=${initData.id}`)
+      .then((response) => {
+        if (response.data != null) {
+          setCommentList(response.data);
+        }
+      });
+  }
+
+  React.useEffect(() => {
+    getCommentList()
+  })
   return (
     <List sx={{ width: "90%", minWidth: 360, bgcolor: "background.paper" }}>
-      {testarr.map((item) => (
+      {commentList.map((item) => (
         <>
           <ListItem alignItems="flex-start" className="ml-15">
             <ListItemAvatar>
               <Avatar
                 alt="E"
-                src="D:\test\aboardfront\src\picture\HC.jpg"
+                // src="D:\test\aboardfront\src\picture\HC.jpg"
                 sx={{ height: "40px", width: "40px", margin: 1 }}
               />
             </ListItemAvatar>
             <ListItemText>
               <Box sx={{display:'flex', alignItems: 'center'}}>
               <Typography variant="h6" color="text.primary">
-                {item.title}
+                {item.owner.displayName}
               </Typography>
                 <Typography sx={{ display: "inline", marginLeft:1 }} variant="subtitle2">
                   12h ago

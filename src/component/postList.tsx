@@ -20,16 +20,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 import EditPostCard from "./editPostCard";
 import DeletePostCard from "./deletePostCard";
 import { useRouter } from "next/navigation";
-import { ItemContext, OurPostContext } from "@/app/public/itemContext";
+import { DetailPostContext, ItemContext, OurPostContext } from "@/app/public/itemContext";
 import { getCookie } from "cookies-next";
+import axios from "axios";
 
 export default function PostList({ currentPostList }) {
-
   const ownerDetail = getCookie("user")?.toString();
-  function prepUserDetail(){
+  function prepUserDetail() {
     const ownerDetailJson = JSON.parse(ownerDetail!);
-    return ownerDetailJson
+    return ownerDetailJson;
   }
+  const {detailPost, setDetailPost} = useContext(DetailPostContext);
 
   const [itemObj, setItemObj] = useState("");
   const value = { itemObj: itemObj, setItemObj: setItemObj };
@@ -38,6 +39,13 @@ export default function PostList({ currentPostList }) {
   function editToggle(event) {
     editSetOpen((editIsOpen) => !editIsOpen);
     if (event !== undefined) {
+      axios
+        .get(`http://localhost:3000/post/id?id=${event.currentTarget.id}`)
+        .then((response) => {
+          if (response.data != null) {
+            setItemObj(response.data);
+          }
+        });
       setItemObj(event.currentTarget);
     }
   }
@@ -51,8 +59,10 @@ export default function PostList({ currentPostList }) {
   }
 
   const router = useRouter();
-  function detailPage() {
-    router.push("http://localhost:8080/dashboard/detail");
+  function detailPage(event) {
+    setDetailPost(itemObj)
+    setItemObj(event.currentTarget);
+    router.push(`http://localhost:8080/dashboard/detail?id=${event.currentTarget.id}`);
   }
 
   return (
@@ -89,12 +99,13 @@ export default function PostList({ currentPostList }) {
                         sx={{ height: "50px", width: "50px", margin: 1 }}
                       />
                     </ListItemAvatar>
-                    <Typography>{prepUserDetail().displayName}</Typography>
+                    <Typography>{item.owner.displayName}</Typography>
                   </Box>
                 </Box>
                 <ListItemText sx={{ paddingLeft: 1, width: 1 }}>
                   <ListItemButton
-                    onClick={detailPage}
+                  id={item.id}
+                    onClick={(e) => detailPage(e)}
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -173,10 +184,12 @@ export default function PostList({ currentPostList }) {
           }}
           open={editIsOpen}
         >
-          <EditPostCard
-            isActive={editIsOpen}
-            onShow={(e) => editToggle(e)}
-          ></EditPostCard>
+          {editIsOpen && (
+            <EditPostCard
+              isActive={editIsOpen}
+              onShow={(e) => editToggle(e)}
+            ></EditPostCard>
+          )}
         </Backdrop>
         <Backdrop
           sx={{
@@ -185,7 +198,9 @@ export default function PostList({ currentPostList }) {
           }}
           open={deleteIsOpen}
         >
-          <DeletePostCard onShow={(e) => deleteToggle(e)}></DeletePostCard>
+          {deleteIsOpen && (
+            <DeletePostCard onShow={(e) => deleteToggle(e)}></DeletePostCard>
+          )}
         </Backdrop>
       </ItemContext.Provider>
     </List>

@@ -4,8 +4,11 @@ import TextField from "@mui/material/TextField";
 import { Button } from "@mui/material";
 import axios from "axios";
 import { getCookie } from "cookies-next";
+import { UserLoginContext } from "@/app/public/itemContext";
+import { useContext } from "react";
 
 export default function CommentCreateBox({ isActive, onShow, parentPostID }) {
+  const {userLoginState, setUserLoginState} = useContext(UserLoginContext);
   const ownerDetail = getCookie("user")?.toString();
 
   var [textboxValue, setTextboxValue] = React.useState("")
@@ -70,6 +73,7 @@ export default function CommentCreateBox({ isActive, onShow, parentPostID }) {
               height: 40,
               width: 100,
             }}
+            disabled={!userLoginState}
           >
             Post
           </Button>

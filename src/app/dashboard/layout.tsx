@@ -3,7 +3,11 @@
 import { Inter } from "next/font/google";
 import NavOverlay from "@/component/navOverlay";
 import { useEffect, useState } from "react";
-import { DetailPostContext, OurPostContext } from "../public/itemContext";
+import {
+  DetailPostContext,
+  OurPostContext,
+  UserLoginContext,
+} from "../public/itemContext";
 import axios from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,6 +29,12 @@ export default function DashboardLayout({
     setDetailPost: setDetailPost,
   };
 
+  const [userLoginState, setUserLoginState] = useState(false);
+  const value3 = {
+    userLoginState: userLoginState,
+    setUserLoginState: setUserLoginState,
+  };
+
   function getInitValue() {
     axios
       .get(`http://localhost:3000/post/id${window.location.search}`)
@@ -37,14 +47,16 @@ export default function DashboardLayout({
 
   useEffect(() => {
     console.log(ourPostState);
-    getInitValue()
+    getInitValue();
   }, [ourPostState]);
 
   return (
     <body className={`${inter.className} justify-between`}>
       <OurPostContext.Provider value={value}>
         <DetailPostContext.Provider value={value2}>
-          <NavOverlay>{children}</NavOverlay>
+          <UserLoginContext.Provider value={value3}>
+            <NavOverlay>{children}</NavOverlay>
+          </UserLoginContext.Provider>
         </DetailPostContext.Provider>
       </OurPostContext.Provider>
     </body>

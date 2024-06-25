@@ -19,13 +19,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
-import { Button } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import DoneIcon from '@mui/icons-material/Done';
+import DoneIcon from "@mui/icons-material/Done";
 import * as React from "react";
 import Dashboard from "@/app/dashboard/page";
-import { OurPostContext } from "@/app/public/itemContext";
+import { OurPostContext, UserLoginContext } from "@/app/public/itemContext";
 import { useContext } from "react";
+import { deleteCookie, getCookie } from "cookies-next";
 
 const drawerWidth = 240;
 
@@ -94,18 +95,27 @@ export default function NavOverlay({
     setOpen(false);
   };
 
-  var {ourPostState, setOurPostState} = useContext(OurPostContext);
+  const userDetail = getCookie("user")?.toString();
+
+  var { ourPostState, setOurPostState } = useContext(OurPostContext);
+  const { userLoginState, setUserLoginState } = useContext(UserLoginContext);
+  if (userDetail != undefined) {
+    setUserLoginState(true);
+  } else {
+    setUserLoginState(false);
+  }
   function toggleOwnerPost() {
-    // console.log(ourPostState)
-    if(ourPostState == true){
+    if (ourPostState == true) {
       setOurPostState(false);
-      // ourPostState = false;
-    }else{
+    } else {
       setOurPostState(true);
-      // ourPostState = true;
     }
   }
 
+  function prepUserDetail() {
+    const ownerDetailJson = JSON.parse(userDetail!);
+    return ownerDetailJson;
+  }
 
   return (
     <Box sx={{ display: "flex" }} className="w-screen h-svh">
@@ -121,16 +131,46 @@ export default function NavOverlay({
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" noWrap component="div" className=" text-white font-['Castoro'] italic " sx={{ flexGrow: 1 }}>
             a Board
           </Typography>
-          <Button
-            variant="contained"
-            sx={{ bgcolor: "#49A569" }}
-            href={`/login`}
-          >
-            Sing In
-          </Button>
+          {(userLoginState && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1, paddingRight: 2 }}
+              >
+                {prepUserDetail().displayName}
+              </Typography>
+
+              <Avatar
+                alt="E"
+                // src="D:\test\aboardfront\src\picture\HC.jpg"
+                sx={{ height: "40px", width: "40px", marginRight: 2 }}
+              />
+
+              <Button
+                variant="contained"
+                sx={{ bgcolor: "#49A569" }}
+                href={`/login`}
+                onClick={() => {
+                  deleteCookie("user", { maxAge: 24 * 60 * 60 * 1000 });
+                }}
+              >
+                Sing Out
+              </Button>
+            </Box>
+          )) || (
+            <Button
+              variant="contained"
+              sx={{ bgcolor: "#49A569" }}
+              href={`/login`}
+            >
+              Sing In
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -166,12 +206,15 @@ export default function NavOverlay({
             </ListItemButton>
           </ListItem>
           <ListItem key={"Our Blog"} disablePadding>
-            <ListItemButton onClick={toggleOwnerPost}>
+            <ListItemButton
+              onClick={toggleOwnerPost}
+              disabled={!userLoginState}
+            >
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
               <ListItemText primary={"Our Blog"} />
-              {ourPostState && <DoneIcon/>}
+              {ourPostState && <DoneIcon />}
             </ListItemButton>
           </ListItem>
         </List>

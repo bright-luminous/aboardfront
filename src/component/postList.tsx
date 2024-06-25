@@ -20,16 +20,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import EditPostCard from "./editPostCard";
 import DeletePostCard from "./deletePostCard";
 import { useRouter } from "next/navigation";
-import { DetailPostContext, ItemContext, OurPostContext } from "@/app/public/itemContext";
+import { DetailPostContext, ItemContext, OurPostContext, UserLoginContext } from "@/app/public/itemContext";
 import { getCookie } from "cookies-next";
 import axios from "axios";
 
 export default function PostList({ currentPostList }) {
+  const {userLoginState, setUserLoginState} = useContext(UserLoginContext);
+
   const ownerDetail = getCookie("user")?.toString();
-  function prepUserDetail() {
-    const ownerDetailJson = JSON.parse(ownerDetail!);
-    return ownerDetailJson;
-  }
   const {detailPost, setDetailPost} = useContext(DetailPostContext);
 
   const [itemObj, setItemObj] = useState("");
@@ -156,6 +154,7 @@ export default function PostList({ currentPostList }) {
                       id={item.id}
                       aria-label="delete"
                       onClick={(e) => editToggle(e)}
+                      disabled={!userLoginState}
                     >
                       <EditIcon sx={{ margin: 1 }} />
                     </IconButton>
@@ -165,6 +164,7 @@ export default function PostList({ currentPostList }) {
                       id={item.id}
                       aria-label="add an alarm"
                       onClick={(e) => deleteToggle(e)}
+                      disabled={!userLoginState}
                     >
                       <DeleteIcon sx={{ margin: 1 }} />
                     </IconButton>

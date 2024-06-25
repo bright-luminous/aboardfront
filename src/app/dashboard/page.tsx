@@ -14,10 +14,11 @@ import CreatePostCard from "@/component/createPostCard";
 import * as React from "react";
 import axios from "axios";
 import { getCookie } from "cookies-next";
-import { OurPostContext } from "../public/itemContext";
+import { OurPostContext, UserLoginContext } from "../public/itemContext";
 
 const Dashboard = () => {
   const {ourPostState, setOurPostState} = useContext(OurPostContext);
+  const { userLoginState, setUserLoginState } = useContext(UserLoginContext);
 
   const ownerDetail = getCookie("user")?.toString();
   const [isOpen, setOpen] = useState(false);
@@ -32,7 +33,12 @@ const Dashboard = () => {
 
   const [postList, setPostList] = useState([]);
   function queryPostListCommunity(selectedCommunity: string, ownerTF: boolean) {
-    const ownerDetailJson = JSON.parse(ownerDetail!);
+    var ownerDetailJson = {}
+    if(ownerDetail == undefined){
+      ownerDetailJson = {id:""}
+    }else{
+      ownerDetailJson = JSON.parse(ownerDetail!);
+    }
 
     if (ownerTF === true) {
       axios
@@ -83,6 +89,7 @@ const Dashboard = () => {
           size="large"
           sx={{ marginX: 2, bgcolor: "#49A569" }}
           disableElevation
+          disabled={!userLoginState}
         >
           Create +
         </Button>
